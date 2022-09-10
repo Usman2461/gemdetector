@@ -39,6 +39,11 @@ dependencies:
   camera: ^0.10.0+1
   image_picker: ^0.8.5+3
   provider: ^6.0.3
+  fluttering_phrases: ^0.3.2
+  url_launcher: ^6.1.5
+  in_app_review: ^2.0.4
+  share_plus: ^4.1.0
+
 
 dev_dependencies:
   flutter_test:
