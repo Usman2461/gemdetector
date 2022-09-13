@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -6,6 +8,7 @@ import '../controller/app_controller.dart';
 import '../utils/colors.dart';
 import '../utils/constant.dart';
 import '../utils/strings.dart';
+import '../widgets/loading_view.dart';
 
 class GalleryScreen extends StatefulWidget {
   const GalleryScreen({Key? key}) : super(key: key);
@@ -17,14 +20,34 @@ class GalleryScreen extends StatefulWidget {
 class _GalleryScreenState extends State<GalleryScreen> {
   AppController? appControllerProvider;
 
-  @override
-  initState() {
-    super.initState();
+  final _random = Random();
+  var stringResult;
+
+  getRndomString() {
+    stringResult = attributives[_random.nextInt(attributives.length)];
+  }
+
+  startTime() async {
+    var duration =  const Duration(microseconds: 0);
+    return  Timer(duration, getLoading);
+  }
+
+
+
+  getLoading()  {
+    if (appControllerProvider!.imageGallery != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const LoadingView()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     appControllerProvider = Provider.of(context, listen: true);
+    getRndomString();
+    startTime();
+    print("element");
+    print(stringResult);
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
@@ -47,49 +70,51 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(33.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        finalSplitted,
-                        style: const TextStyle(
-                            color: AppColors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Lottie.asset('assets/lottie/diamondAnimation.json',
-                          height: 250, width: 300),
-                      Flex(
-                        direction: Axis.horizontal,
-                        children: [
-                          Flexible(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  AppStrings.warning,
-                                  style: TextStyle(
-                                      color: AppColors.red,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  AppStrings.warning1,
-                                  style: TextStyle(
-                                      color: AppColors.red,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
+          Padding(
+            padding: const EdgeInsets.all(33.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  stringResult,
+                  style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                ),
+                Lottie.asset('assets/lottie/diamondAnimation.json',
+                    height: 250, width: 300),
+                stringResult == AppStrings.gemstoneFake
+                    ? Flex(
+                  direction: Axis.horizontal,
+                  children: [
+                    Flexible(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          Text(
+                            AppStrings.warning,
+                            style: TextStyle(
+                                color: AppColors.red,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            AppStrings.warning1,
+                            style: TextStyle(
+                                color: AppColors.red,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )
+                    : SizedBox(),
+              ],
+            ),
+          )
               ])
             : Stack(alignment: Alignment.center, children: <Widget>[
                 BackdropFilter(

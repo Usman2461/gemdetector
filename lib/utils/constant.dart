@@ -14,8 +14,7 @@ List<String> attributives = [
   AppStrings.gemstoneReal,
 ];
 
-final generatedTitle =
-    generate(delimiter: '|', tokenRadix: 6, attributives: attributives);
+final generatedTitle = generate(delimiter: '|', tokenRadix: 6, attributives: attributives);
 List dataSplited = generatedTitle.split("|");
 var finalSplitted = dataSplited[0].trim();
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:gemdetector/utils/strings.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../utils/constant.dart';
+import '../widgets/loading_view.dart';
 
 class CameraScreen extends StatefulWidget {
   CameraScreen({Key? key}) : super(key: key);
@@ -18,14 +21,31 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen> {
   AppController? appControllerProvider;
 
-  @override
-  initState() {
-    super.initState();
+  final _random = Random();
+  var stringResult;
+
+  getRndomString() {
+    stringResult = attributives[_random.nextInt(attributives.length)];
   }
 
+  startTime() async {
+    var duration =  const Duration(microseconds: 0);
+    return  Timer(duration, getLoading);
+  }
+
+
+
+  getLoading()  {
+    if (appControllerProvider!.imageCamera != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const LoadingView()),
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
-    appControllerProvider = Provider.of(context, listen: true);
+    appControllerProvider = Provider.of(context, listen: false);
+    getRndomString();
+    startTime();
     return Scaffold(
       body: Container(
         width: MediaQuery
@@ -67,27 +87,39 @@ class _CameraScreenState extends State<CameraScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     Text(finalSplitted,style: const TextStyle(color: AppColors.white,fontSize:22,fontWeight: FontWeight.bold
+                     Text(stringResult,style: const TextStyle(color: AppColors.white,fontSize:22,fontWeight: FontWeight.bold
                     ),),
                     Lottie.asset(
                         'assets/lottie/diamondAnimation.json', height: 250,
                         width: 300),
-                    Flex(
+                    stringResult == AppStrings.gemstoneFake
+                        ? Flex(
                       direction: Axis.horizontal,
                       children: [
-                        Flexible( 
+                        Flexible(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: const [
-                              Text(AppStrings.warning,style: TextStyle(color: AppColors.red,fontSize:16,fontWeight: FontWeight.bold
-                              ),),
-                              Text(AppStrings.warning1,style: TextStyle(color: AppColors.red,fontSize:18,fontWeight: FontWeight.bold
-                              ),),
+                              Text(
+                                AppStrings.warning,
+                                style: TextStyle(
+                                    color: AppColors.red,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                AppStrings.warning1,
+                                style: TextStyle(
+                                    color: AppColors.red,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
                         ),
                       ],
-                    ),
+                    )
+                        : SizedBox(),
                   ],
                 ),
               )
